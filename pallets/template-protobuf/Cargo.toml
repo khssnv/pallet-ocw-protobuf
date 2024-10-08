@@ -13,6 +13,7 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
+prost = { version = "0.13", default-features = false, features = ["prost-derive"] }
 log = { workspace = true }
 
 codec = { features = [
@@ -21,6 +22,7 @@ codec = { features = [
 scale-info = { features = [
 	"derive",
 ], workspace = true }
+sp-std = { workspace = true }
 frame-benchmarking = { optional = true, workspace = true }
 frame-support.workspace = true
 frame-system.workspace = true

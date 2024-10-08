@@ -39,6 +39,11 @@
 // We make sure this pallet uses `no_std` for compiling to Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+extern crate alloc;
+
+use alloc::string::ToString;
+use sp_std::prelude::*;
+
 // Re-export pallet items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
@@ -59,6 +64,12 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 pub use weights::*;
+
+use prost::Message;
+
+pub mod items {
+    include!(concat!(env!("OUT_DIR"), "/pallet_template_protobuf.items.rs"));
+}
 
 // All pallet logic is defined in its own module and must be annotated by the `pallet` attribute.
 #[frame_support::pallet]
@@ -204,6 +215,19 @@ pub mod pallet {
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn offchain_worker(block_number: BlockNumberFor<T>) {
 			log::info!("offchain_worker: block_number = {:?}", block_number);
+
+			let mut large_green_shirt = items::Shirt::default();
+			large_green_shirt.color = "green".to_string();
+			large_green_shirt.set_size(items::shirt::Size::Large);
+			log::info!("large_green_shirt = {:?}", large_green_shirt);
+
+			let mut serialized_large_green_shirt = Vec::new();
+			serialized_large_green_shirt.reserve(large_green_shirt.encoded_len());
+			large_green_shirt.encode(&mut serialized_large_green_shirt).unwrap();
+			log::info!("serialized_large_green_shirt = {:?}", serialized_large_green_shirt);
+
+			let deserialized_large_green_shirt = items::Shirt::decode(&serialized_large_green_shirt[..]).unwrap();
+			log::info!("deserialized_large_green_shirt = {:?}", deserialized_large_green_shirt);
 		}
 	}
 }

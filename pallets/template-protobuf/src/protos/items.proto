@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package pallet_template_protobuf.items;
+
+message Shirt {
+  enum Size {
+    SIZE_SMALL_UNSPECIFIED = 0;
+    SIZE_MEDIUM = 1;
+    SIZE_LARGE = 2;
+  }
+
+  string color = 1;
+  Size size = 2;
+}
